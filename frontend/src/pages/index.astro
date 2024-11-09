@@ -1,0 +1,75 @@
+---
+
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<h2>Login</h2>
+		<form class="login">
+			<input type="text" name="username" autocomplete="off" placeholder="Enter username">
+			<input type="password" name="password" placeholder="Enter password">
+			<button type="submit">Log In</button>
+		</form>
+
+		<h2>Create Account</h2>
+		<form class="signup">
+			<input type="text" name="username" autocomplete="off" placeholder="Enter username">
+			<input type="password" name="password" placeholder="Enter password">
+			<button type="submit">Sign Up</button>
+		</form>
+
+		<script>
+			const loginForm = document.querySelector('.login') as HTMLFormElement
+			const signupForm = document.querySelector('.signup') as HTMLFormElement
+
+			loginForm.addEventListener('submit', async (e): Promise<void> => {
+				e.preventDefault()
+				const formData = new FormData(loginForm)
+
+				const res = await fetch(`http://localhost:3500/users/login`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					credentials: 'include',
+					body: JSON.stringify({
+						username: formData.get('username'),
+						password: formData.get('password')
+					})
+				})
+				const data = await res.json()
+				if (res.ok) {
+					window.location.href = "/profile"
+				} else {
+					console.error('Error:', data.message)
+				}
+			})
+
+			signupForm.addEventListener('submit', async (e): Promise<void> => {
+				e.preventDefault()
+				const formData = new FormData(signupForm)
+
+				const res = await fetch(`http://localhost:3500/users/register`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					credentials: 'include',
+					body: JSON.stringify({
+						username: formData.get('username'),
+						password: formData.get('password')
+					})
+				})
+				const data = await res.json()
+				console.log(data)
+			})
+		</script>
+	</body>
+</html>
