@@ -5,9 +5,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import userRouter from './routes/user.routes'
-import articleRouter from './routes/article.routes'
+import playerRouter from './routes/player.routes'  
 
-// Create server
 const app = express()
 
 // Middleware
@@ -21,14 +20,14 @@ app.use(cookieSession({
     process.env.COOKIE_SIGN_KEY ?? 'jerogiglu90o23',
     process.env.COOKIE_ENCRYPT_KEY ?? 'ejefoiwlejf09qo'
   ],
-  maxAge: 60 * 60 * 1000 // 1 hour
+  maxAge: 60 * 60 * 1000 
 }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // Routes
 app.use('/users', userRouter)
-app.use('/articles', articleRouter)
+app.use('/players', playerRouter) 
 
 // 404 Fallback
 app.use((req: Request, res: Response) => {
@@ -38,5 +37,5 @@ app.use((req: Request, res: Response) => {
 // Start server
 const PORT: number = Number(process.env.PORT || 3000)
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}...`)
+  console.log(`Servidor corriendo en el puerto ${PORT}...`)
 })

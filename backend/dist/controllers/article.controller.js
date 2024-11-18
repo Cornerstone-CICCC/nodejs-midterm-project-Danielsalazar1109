@@ -3,61 +3,57 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const article_model_1 = __importDefault(require("../models/article.model"));
-// Get all articles
-const getArticles = (req, res) => {
-    const { userId } = req.session;
-    const articles = article_model_1.default.findAll(userId);
-    res.json(articles);
+const player_model_1 = __importDefault(require("../models/player.model"));
+// Obtener todos los jugadores
+const getPlayers = (req, res) => {
+    const players = player_model_1.default.findAll('someTeamId');
+    res.json(players);
 };
-// Get article by id
-const getArticleById = (req, res) => {
+// Obtener un jugador por su ID
+const getPlayerById = (req, res) => {
     const { id } = req.params;
-    const article = article_model_1.default.findById(id);
-    if (!article) {
-        res.status(404).json({ message: 'Article not found' });
+    const player = player_model_1.default.findById(id);
+    if (!player) {
+        res.status(404).json({ message: 'Player not found' });
         return;
     }
-    res.json(article);
+    res.json(player);
 };
-// Add article
-const addArticle = (req, res) => {
-    const { userId } = req.session;
-    const { title, content, published } = req.body;
-    if (!title || !userId) {
-        res.status(400).json({ message: 'Missing title or user id' });
+// Agregar un jugador
+const addPlayer = (req, res) => {
+    const { name, position, teamId, nationality, age, goals, assists, isCaptain, isActive } = req.body;
+    if (!name || !position || !teamId) {
+        res.status(400).json({ message: 'Missing required player information' });
         return;
     }
-    const article = article_model_1.default.create({ title, content, published, userId });
-    res.status(201).json(article);
+    const player = player_model_1.default.create({ name, position, teamId, nationality, age, goals, assists, isCaptain, isActive });
+    res.status(201).json(player);
 };
-// Update article by id
-const updateArticleById = (req, res) => {
-    const { userId } = req.session;
+// Actualizar un jugador por su ID
+const updatePlayerById = (req, res) => {
     const { id } = req.params;
-    const { title, content, published } = req.body;
-    const article = article_model_1.default.edit(id, { title, content, published, userId });
-    if (!article) {
-        res.status(404).json({ message: "Article not found" });
+    const { name, position, teamId, nationality, age, goals, assists, isCaptain, isActive } = req.body;
+    const player = player_model_1.default.edit(id, { name, position, teamId, nationality, age, goals, assists, isCaptain, isActive });
+    if (!player) {
+        res.status(404).json({ message: 'Player not found' });
         return;
     }
-    res.json(article);
+    res.json(player);
 };
-// Delete article by id
-const deleteArticleById = (req, res) => {
-    const { userId } = req.session;
-    const { id } = req.params;
-    const response = article_model_1.default.delete(id, userId);
+// Eliminar un jugador por su ID
+const deletePlayerById = (req, res) => {
+    const { id, teamId } = req.params;
+    const response = player_model_1.default.delete(id, teamId);
     if (!response) {
-        res.status(404).json({ message: "Article not found" });
+        res.status(404).json({ message: 'Player not found' });
         return;
     }
     res.status(204).send();
 };
 exports.default = {
-    getArticles,
-    getArticleById,
-    addArticle,
-    updateArticleById,
-    deleteArticleById
+    getPlayers,
+    getPlayerById,
+    addPlayer,
+    updatePlayerById,
+    deletePlayerById
 };

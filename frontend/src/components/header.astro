@@ -1,0 +1,57 @@
+<header class="header">
+  <div class="logo">
+    <img src="images/logo.png" alt="Logo">
+    <a href="/">CORNAGER</a>
+  </div>
+  <button class="logout" id = "logout">Log Out</button>
+</header>
+
+<style>
+
+img{
+    width: 50px;
+    height: 70px;
+  }
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color:rgba(169, 4, 72, 0.2); 
+  color: black;
+  width: 97.35%;
+}
+
+.logo a {
+  font-size: 70px;
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+.logout {
+  background-color: #757575;
+    color: white;
+    border: 2px solid #455A64; 
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.logout:hover {
+  background-color: #455A64;
+}
+</style>
+
+<script>
+  const logoutButton = document.getElementById('logout');
+  logoutButton?.addEventListener('click', handleLogout);
+  async function handleLogout() {
+    await fetch('http://localhost:3000/users/logout', {
+      credentials: 'include',
+    });
+    window.location.href = "/";
+  }
+</script>

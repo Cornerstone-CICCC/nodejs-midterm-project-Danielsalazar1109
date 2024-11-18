@@ -2,6 +2,7 @@
 
 ---
 
+
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
@@ -9,20 +10,98 @@
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #2d2d2d;
+				color: white;
+				margin: 0;
+				padding: 0;
+				background-image: url('images/soccer.jpg');
+				background-size: cover;
+				background-position: center;
+			}
+
+			h2 {
+				text-align: center;
+				font-size: 2rem;
+				margin-top: 2rem;
+			}
+
+			form {
+				background: rgba(0, 0, 0, 0.7);
+				padding: 2rem;
+				margin: 2rem auto;
+				border-radius: 10px;
+				width: 300px;
+				box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+			}
+
+			input {
+				width: 90%;
+				padding: 0.8rem;
+				margin: 1rem 0;
+				border: none;
+				border-radius: 5px;
+				font-size: 0.9rem;
+			}
+
+			input[type="text"],
+			input[type="password"] {
+				background-color: #ffffff;
+				color: #333;
+			}
+
+			button {
+				width: 100%;
+				padding: 1rem;
+				background-color: #4CAF50; 
+				color: white;
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+				font-size: 1.2rem;
+				transition: background-color 0.3s ease;
+			}
+
+			button:hover {
+				background-color: #45a049;
+			}
+
+			.signup {
+				margin-top: 2rem;
+			}
+
+			.login button {
+				background-color: #008CBA; 
+			}
+
+			.login button:hover {
+				background-color: #007bb5;
+			}
+
+			.signup button {
+				background-color: #f39c12; 
+			}
+
+			.signup button:hover {
+				background-color: #e67e22;
+			}
+		</style>
 	</head>
 	<body>
-		<h2>Login</h2>
+		<h2>LOGIN</h2>
 		<form class="login">
 			<input type="text" name="username" autocomplete="off" placeholder="Enter username">
 			<input type="password" name="password" placeholder="Enter password">
-			<button type="submit">Log In</button>
+			<button type="submit">Log in</button>
 		</form>
 
-		<h2>Create Account</h2>
+		<h2>CREATE ACCOUNT</h2>
 		<form class="signup">
 			<input type="text" name="username" autocomplete="off" placeholder="Enter username">
 			<input type="password" name="password" placeholder="Enter password">
-			<button type="submit">Sign Up</button>
+			<button type="submit">Sign up</button>
 		</form>
 
 		<script>
@@ -33,7 +112,7 @@
 				e.preventDefault()
 				const formData = new FormData(loginForm)
 
-				const res = await fetch(`http://localhost:3500/users/login`, {
+				const res = await fetch(`http://localhost:3000/users/login`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json"
@@ -56,7 +135,7 @@
 				e.preventDefault()
 				const formData = new FormData(signupForm)
 
-				const res = await fetch(`http://localhost:3500/users/register`, {
+				const res = await fetch(`http://localhost:3000/users/register`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json"
@@ -67,6 +146,7 @@
 						password: formData.get('password')
 					})
 				})
+				alert ("User created successfully")
 				const data = await res.json()
 				console.log(data)
 			})

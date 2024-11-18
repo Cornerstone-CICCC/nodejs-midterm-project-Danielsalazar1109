@@ -1,130 +1,1026 @@
-
 ---
-
+import Header from "../components/header.astro";
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-    <div class="container hidden">
-      <h1>My Profile</h1>
-      <button>Log Out</button>
-
-      <form class="add-article">
-        <input type="text" name="title" autocomplete="off" placeholder="Enter title">
-        <textarea name="content" id="content" placeholder="Enter content"></textarea>
-        <input type="checkbox" name="published" id="published" checked>
-        <button type="submit">Create Article</button>
-      </form>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Content</th>
-            <th>Published</th>
-          </tr>
-        </thead>
-        <tbody class="tbody-articles">
-          <!-- ARTICLES SHOW UP HERE -->
-        </tbody>
-      </table>
-    </div>
-
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
     <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        height: 100vh;
+        background-color: white;
+      }
+      h1,h2{
+        font-family: 'Roboto', sans-serif;
+        color: #FFFFFF;
+        font-size: 48px;
+        text-align: center;
+        font-weight: 600;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      .container {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        flex: 1;
+        justify-content: space-between;
+        flex-direction: row;
+      }
+      .left-section {
+        flex: 1;
+        padding-right: 20px;
+        background-color:#fb3640;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .right-section {
+        flex: 1;
+        padding-left: 20px;
+        background-color: #fda543;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      #search-name {
+        padding: 10px;
+        font-size: 1rem;
+        width: 50%;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        outline: none;
+        margin-left: 2vw;
+      }
+      #search-name:focus {
+        border-color: #4CAF50;
+      }
+      #player-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: none;
+        position: absolute;
+        top: 37vh;
+        left: 7vw;
+        width: 27%;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+      }
+      #player-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      .scrollable {
+        overflow-y: scroll;
+        max-height: 350px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        max-height: 80vh;
+        margin-left: 0vw;
+      }
+      table, th, td {
+        border: 1px solid #ddd;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+        font-size: 1rem;
+      }
+      th {
+        background-color: #4CAF50;
+        color: white;
+      }
+      td img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      tbody {
+        overflow-y: scroll;
+      }
+      .circle-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .circle-row {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        width: 100%;
+      }
+      .circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: green;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #add-new-player {
+    padding: 10px 20px;
+    background-color: #ffffff; 
+    color: #00c16c; 
+    border: 2px solid #00c16c; 
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#add-new-player:hover {
+    background-color: #00c16c; 
+    color: white; 
+}
+
+
+      #budget-container {
+        position: absolute;
+        top: 90px;
+        left: 900px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      #budget, #overall-rating {
+        font-size: 40px;
+        font-weight: bold;
+        color: white;
+        background-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        padding: 10px 20px;
+        border-radius: 5px;
+      }
+
+      .modal {
+        background-color: #fff;
+        padding: 20px 30px;
+        width: 350px;
+        max-width: 90%;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        position: relative;
+        z-index: 10001;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .modal h2 {
+        margin-top: 0;
+        font-size: 1.8em;
+        color: #333;
+      }
+
+      .modal input[type="text"],
+      .modal input[type="number"],
+      .modal input[type="url"] {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+      }
+
+      .modal input[type="checkbox"] {
+        margin-top: 10px;
+      }
+
+      .modal button {
+        padding: 10px 20px;
+        margin-top: 15px;
+        font-size: 1em;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .modal button[type="button"] {
+        background-color: #ccc;
+        margin-left: 10px;
+      }
+
+      .modal button#cancel-btn {
+        background-color: #f44336;
+      }
+
+      .search-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        gap: 10px;
+      }
+
       .hidden {
         display: none;
       }
+
+      .pet {
+        position: absolute;
+        top: 80%;
+        left: 45%;
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 50%;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+      }
+
+      .pet-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pet-text {
+  font-family: 'Poppins', sans-serif;
+      background-color: #ffffff; 
+    color: #333333;
+    border-radius: 10px; 
+    padding: 15px;
+    margin-left: 10px; 
+    position: relative;
+    font-size: 24px;
+    max-width: 600px;
+    height: 260px;
+    font-weight: 550;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .container {
+    flex-direction: column;
+    height: auto;
+    margin: 0 10px;
+  }
+
+  .left-section, .right-section {
+    flex: none;
+    padding: 10px;
+    width: 100%;
+  }
+
+  h1, h2 {
+    font-size: 32px;
+  }
+
+  #search-name {
+    width: 80%;
+    margin-left: 0;
+  }
+
+  #add-new-player {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .pet {
+    width: 150px;
+    height: 150px;
+  }
+
+  .pet-text {
+    font-size: 18px;
+    margin-left: 10px;
+    max-width: 100%; 
+    font-weight: 400;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+
+  #budget-container {
+    position: static;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .circle-container {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .circle-row {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .left-section, .right-section {
+    flex: 1;
+    padding: 20px;
+  }
+
+  h1, h2 {
+    font-size: 40px;
+  }
+
+  #search-name {
+    width: 70%;
+  }
+
+  #add-new-player {
+    width: 80%;
+  }
+
+  .pet {
+    width: 200px;
+    height: 200px;
+  }
+
+  .pet-text {
+    font-size: 20px;
+  }
+}
+
+
+@media (min-width: 1025px) {
+  .container {
+    flex-direction: row;
+  }
+
+  h1, h2 {
+    font-size: 48px;
+  }
+
+  #search-name {
+    width: 50%;
+  }
+
+  .pet {
+    width: 250px;
+    height: 250px;
+  }
+}
     </style>
+  </head>
+  <header>
+    <Header />
+  </header>
+  <main>
+    <div class="container">
+      <div class="left-section">
+        <h1>My Football Team</h1>
+        <div class ="search-container">
+        <input type="text" id="search-name" placeholder="Search for a player by name" autocomplete="on" />
+        <button id="add-new-player">Create player</button>
+        </div>
+        <div class="pet-container">
+        <img src="images/pet.gif" class="pet" alt="Pet">
+        <div class="pet-text">
+          <p>
+            - Build your dream team by selecting players, comparing stats, and assigning positions.<br>
+            - The manager in the bottom-right will help you pick based on your budget.<br>
+            - Use the substitution feature in the bottom-left to swap positions by clicking two players and the substitution icon.<br>
+            - Get ready to win!
+        </p>
+          </div>
+        </div>
+        <ul id="player-list"></ul>
+        <div class="scrollable">
+          <table>
+            <thead class="hidden">
+              <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Number</th>
+                <th>Captain</th>
+                <th>Price</th>
+                <th>Rating</th>
+                <th>Image</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody class="tbody-players">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="right-section">
+        <div id="budget-container">
+          <div id="budget">💰 $1000</div>
+          <div id="overall-rating">⭐ 0</div>
+        </div>
+        <div class="circle-container" id="circle-container">
+          <div id="goalkeeper-row" class="circle-row"></div>
+          <div id="defender-row" class="circle-row"></div>
+          <div id="midfielder-row" class="circle-row"></div>
+          <div id="forward-row" class="circle-row"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="add-player-modal" class="modal hidden">
+      <form id="add-player-form">
+        <h2>Add player</h2>
+        <input type="text" id="player-name" placeholder="Name" required />
+        <select id="player-position" required>
+          <option value="">Select a position</option>
+          <option value="Goalkeeper">Goalkeeper</option>
+          <option value="Defender">Defender</option>
+          <option value="Midfielder">Midfielder</option>
+          <option value="Forward">Forward</option>
+        </select>
+        <input type="number" id="player-number" placeholder="Number" required max="99" min="1"/>
+        <label for="captain">Captain</label>
+        <input type="checkbox" id="player-captain" />
+        <input type="number" id="player-price" placeholder="Price" required max="200" min="0"/>
+        <input type="number" id="player-rating" placeholder="Overall" required max="100" min="0"/>\
+        <input type="number" id="team-id" placeholder="Team ID" required />
+        <input type="url" id="player-image-url" placeholder="Image URL" required />
+        <button type="submit">Add player</button>
+        <button type="button" id="cancel-btn">Cancel</button>
+      </form>
+    </div>
+  
 
     <script>
-      const container = document.querySelector('.container') as HTMLDivElement
-      const logoutBtn = container.querySelector('button') as HTMLButtonElement
-      const articleForm = container.querySelector('.add-article') as HTMLFormElement
-      const tableBody = container.querySelector('.tbody-articles') as HTMLTableElement
+      import Sortable from 'sortablejs';
+      const container = document.querySelector('.container') as HTMLDivElement;
+      const searchInput = document.getElementById('search-name') as HTMLInputElement;
+      const playerList = document.getElementById('player-list') as HTMLUListElement;
+      const tableBody = container.querySelector('.tbody-players') as HTMLTableElement;
+      const budgetElement = document.getElementById('budget') as HTMLDivElement;
+      const circleContainer = document.getElementById('circle-container') as HTMLDivElement;
+      const addPlayerForm = document.getElementById('add-player-form') as HTMLFormElement;
 
-      logoutBtn.addEventListener('click', async (): Promise<void> => {
-        await fetch(`http://localhost:3500/users/logout`, {
-          credentials: 'include'
-        })
-        window.location.href = "/"
-      })
+      circleContainer.style.backgroundImage='url(images/field.jpg)';
+      circleContainer.style.backgroundSize='cover';
+      circleContainer.style.backgroundPosition='center';
+      circleContainer.style.width='550px';
+      circleContainer.style.height='650px';
+      circleContainer.style.display='flex';
+      circleContainer.style.marginLeft='80px';
+      circleContainer.style.marginTop='50px';
+      circleContainer.style.display='flex';
+  
 
-      const fetchArticles = async (): Promise<[]> => {
-        const res = await fetch(`http://localhost:3500/articles`, {
-          credentials: 'include'
-        })
-        const data = await res.json()
-        return data
-      }
-
-      type Article = {
-        id: string,
-        title: string,
-        content: string,
-        published: boolean,
-        userId: string
-      }
-
-      const buildList = async (): Promise<void> => {
-        const articles: Article[] = await fetchArticles()
-        tableBody.innerHTML = ""
-
-        let tableContent = ''
-        articles.forEach(article => {
-          tableContent += `
-            <tr>
-              <td>${article.title}</td>
-              <td>${article.content}</td>
-              <td>${article.published ? 'Published' : 'Unpublished'}</td>
-            </tr>
-          `
-        })
-        tableBody.innerHTML = tableContent
-      }
-
-      articleForm.addEventListener('submit', async (e): Promise<void> => {
-        e.preventDefault()
-        const formData = new FormData(articleForm)
-        const isChecked = formData.get('published') === "on" ? true : false
-        const res = await fetch(`http://localhost:3500/articles/add`, {
-          method: 'POST',
-          headers: {
-            "Content-Type": "application/json"
-          },
+      let budget = 1000; 
+      let allPlayers: Player[] = []; 
+      
+      // Fetch players from the server
+      const fetchPlayers = async (): Promise<Player[]> => {
+        const res = await fetch('http://localhost:3000/players', {
           credentials: 'include',
+        });
+        const data = await res.json();
+        allPlayers = data; 
+        buildPlayerList(allPlayers); 
+        return data;
+      };
+
+      // Define player type
+      type Player = {
+        id: string;
+        name: string;
+        position: string;
+        number: number;
+        captain: boolean;
+        userId: string;
+        teamId: string;
+        price: number;
+        rating: number;
+        imageUrl: string;
+      };
+
+      // Add new player functional
+      addPlayerForm.addEventListener('submit', async (event): Promise<void> => {
+        event.preventDefault();
+        const name = (document.getElementById('player-name') as HTMLInputElement).value;
+        const position = (document.getElementById('player-position') as HTMLInputElement).value;
+        const number = (document.getElementById('player-number') as HTMLInputElement).value;
+        const captain = (document.getElementById('player-captain') as HTMLInputElement).checked;
+        const price = (document.getElementById('player-price') as HTMLInputElement).value;
+        const rating = (document.getElementById('player-rating') as HTMLInputElement).value;
+        const imageUrl = (document.getElementById('player-image-url') as HTMLInputElement).value;
+        const teamId = (document.getElementById('team-id') as HTMLInputElement).value;
+
+
+        const res = await fetch('http://localhost:3000/players/add', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
-            title: formData.get('title'),
-            content: formData.get('content'),
-            published: isChecked
+            name,
+            position,
+            number,
+            captain,
+            price,
+            rating,
+            imageUrl,
+            teamId
           })
-        })
-        const data = await res.json()
-        buildList()
-      })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            alert('Player added successfully');
+            (document.getElementById('player-name') as HTMLInputElement).value = '';
+            (document.getElementById('player-position') as HTMLInputElement).value = '';
+            (document.getElementById('player-number') as HTMLInputElement).value = '';
+            (document.getElementById('player-captain') as HTMLInputElement).checked = false;
+            (document.getElementById('player-price') as HTMLInputElement).value = '';
+            (document.getElementById('player-rating') as HTMLInputElement).value = '';
+            (document.getElementById('player-image-url') as HTMLInputElement).value = '';
+            fetchPlayers();
+          } else {
+            console.error('Error:', data.message);
+          }
+        });
 
-      const loadProfile = async (): Promise<void> => {
-        const res = await fetch(`http://localhost:3500/users/profile`, {
-          credentials: 'include'
-        })
-        const data = await res.json()
-        if (res.ok) {
-          container.classList.remove('hidden')
-          const title = container.querySelector('h1') as HTMLHeadingElement
-          title.innerText = `${data.username.toUpperCase()}'s Profile`
-          buildList()
+        //Update player functional
+        const updatePlayer = async (playerId: string): Promise<void> => {
+          const res = await fetch(`http://localhost:3000/players/update/${playerId}`, {
+            method: 'PUT',
+            credentials: 'include',
+          });
+          const data = await res.json();
+          if (res.ok) {
+            alert('Player updated successfully');
+            fetchPlayers();
+          } else {
+            console.error('Error:', data.message);
+          }
+        };
+
+      // Function to build the list of players in the player list
+      const buildPlayerList = (players: Player[]): void => {
+        playerList.innerHTML = ""; 
+
+        players.forEach(player => {
+  const li = document.createElement("li");
+  li.style.margin = '0';
+  li.style.padding = '10px';
+  li.style.border = '1px solid #ddd';
+  li.style.borderRadius = '5px';
+  li.style.display = 'flex';
+  li.style.justifyContent = 'space-between';
+  li.style.alignItems = 'center';
+  li.style.backgroundColor = '#f9f9f9';
+  li.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)';
+  li.style.zIndex = '1000';
+
+  const playerName = document.createElement('span');
+  playerName.textContent = player.name;
+  playerName.style.fontSize = '0.9rem';
+  playerName.style.fontWeight = 'bold';
+  playerName.style.color = '#333';
+
+  const addButton = document.createElement('button');
+  addButton.textContent = '+';
+  addButton.classList.add('add-btn');
+  addButton.dataset.id = player.id;
+  addButton.dataset.price = player.price.toString();
+  addButton.dataset.image = player.imageUrl;
+  addButton.style.backgroundColor = '#4CAF50';
+  addButton.style.color = 'white';
+  addButton.style.padding = '8px 12px';
+  addButton.style.border = 'none';
+  addButton.style.borderRadius = '5px';
+  addButton.style.cursor = 'pointer';
+  addButton.style.transition = 'background-color 0.3s';
+  
+  addButton.addEventListener('mouseenter', () => {
+    addButton.style.backgroundColor = '#45a049';
+  });
+
+  addButton.addEventListener('mouseleave', () => {
+    addButton.style.backgroundColor = '#4CAF50';
+  });
+
+  li.appendChild(playerName);
+  li.appendChild(addButton);
+  
+  playerList.appendChild(li);
+});
+
+        // Add event listeners to "Add to Team" buttons
+        const addBtns = document.querySelectorAll('.add-btn') as NodeListOf<HTMLButtonElement>;
+          const thead= document.querySelector('thead')
+          const petContainer = document.getElementsByClassName('pet-container');
+          addBtns.forEach(button => {
+  button.addEventListener('click', () => {
+    addPlayerToTeam(button.dataset.id!, button.dataset.price!, button.dataset.image!);
+    thead?.classList.remove('hidden');
+    if (petContainer[0]) {
+      (petContainer[0] as HTMLDivElement).style.display = 'none';
+    }
+  });
+});
+      };
+
+      searchInput.addEventListener('input', (): void => {
+  const searchTerm = searchInput.value.trim().toLowerCase();
+  if (searchTerm === "") {
+    buildPlayerList(allPlayers); 
+    playerList.style.display = "none"; 
+  } else {
+    const filteredPlayers = allPlayers.filter(player => player.name.toLowerCase().includes(searchTerm));
+    if (filteredPlayers.length === 0) {
+      playerList.innerHTML = "<li>No players found</li>";
+      playerList.style.display = "block";
+    } else {
+      buildPlayerList(filteredPlayers); 
+      playerList.style.display = "block"; 
+    }
+  }
+});
+
+const helpButton = document.createElement('button');
+helpButton.style.backgroundImage = 'url(images/manager.png)';
+helpButton.style.backgroundSize = 'cover';
+helpButton.style.backgroundPosition = 'center';
+helpButton.style.backgroundColor = 'transparent';
+helpButton.style.padding = '10px 15px';
+helpButton.style.border = 'none';
+helpButton.style.fontSize = '1rem';
+helpButton.style.cursor = 'pointer';
+helpButton.style.borderRadius = '5px';
+helpButton.style.marginTop = '450px';
+helpButton.style.marginLeft = '420px';
+helpButton.style.width = '150px';
+helpButton.style.height = '150px';
+
+
+circleContainer.appendChild(helpButton);
+
+const modal = document.createElement('div');
+modal.style.display = 'none';
+modal.style.position = 'fixed';
+modal.style.top = '0';
+modal.style.left = '0';
+modal.style.right = '0';
+modal.style.bottom = '0';
+modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+modal.style.zIndex = '9999';
+modal.style.justifyContent = 'center';
+modal.style.alignItems = 'center';
+
+const modalContent = document.createElement('div');
+modalContent.style.backgroundImage = 'url(images/money.jpg)';
+modalContent.style.padding = '20px';
+modalContent.style.borderRadius = '8px';
+modalContent.style.maxWidth = '1000px';
+modalContent.style.maxHeight = '80%';
+modalContent.style.overflowX = 'auto';
+modalContent.style.width = '100%';
+modalContent.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+
+const affordablePlayersList = document.createElement('div');
+affordablePlayersList.style.display = 'grid';
+affordablePlayersList.style.gridTemplateColumns = '1fr 1fr 1fr 1fr 1fr 1fr'; 
+affordablePlayersList.style.gridGap = '20px';
+affordablePlayersList.style.padding = '0';
+modalContent.appendChild(affordablePlayersList);
+modal.appendChild(modalContent);
+document.body.appendChild(modal);
+
+const showAffordableOptions = () => {
+  const affordablePlayers = allPlayers.filter(player => player.price <= budget);
+
+  affordablePlayersList.innerHTML = ''; 
+
+  if (affordablePlayers.length === 0) {
+    affordablePlayersList.innerHTML = '<p>No affordable players available</p>';
+  } else {
+    affordablePlayers.forEach(player => {
+      const playerCard = document.createElement('div');
+      playerCard.style.padding = '10px';
+      playerCard.style.border = '1px solid #ddd';
+      playerCard.style.borderRadius = '8px';
+      playerCard.style.textAlign = 'center';
+      playerCard.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+      playerCard.style.cursor = 'pointer';
+      playerCard.style.backgroundColor = 'white';
+
+      //Player Image
+      const playerImg = document.createElement('img');
+      playerImg.src = player.imageUrl; 
+      playerImg.alt = player.name;
+      playerImg.style.width = '100px';
+      playerImg.style.height = '100px';
+      playerImg.style.borderRadius = '50%';
+      playerImg.style.marginBottom = '10px';
+      playerCard.appendChild(playerImg);
+
+      // Player Name
+      const playerName = document.createElement('p');
+      playerName.textContent = player.name;
+      playerName.style.fontWeight = 'bold';
+      playerCard.appendChild(playerName);
+
+      // Player Price
+      const playerPrice = document.createElement('p');
+      playerPrice.textContent = `$${player.price}`;
+      playerCard.appendChild(playerPrice);
+
+      // Player Position
+      const playerPosition = document.createElement('p');
+      playerPosition.textContent = player.position;
+      playerPosition.style.fontStyle = 'italic';
+      playerCard.appendChild(playerPosition);
+
+      affordablePlayersList.appendChild(playerCard);
+    });
+  }
+
+  modal.style.display = 'flex';
+};
+
+const closeModal = () => {
+  modal.style.display = 'none';
+};
+
+helpButton.addEventListener('click', showAffordableOptions);
+
+modal.addEventListener('click', (event) => {
+  if (event.target === modal) {
+    closeModal();
+  }
+});
+
+document.getElementById("add-new-player")?.addEventListener("click", () => {
+  document.getElementById("add-player-modal")?.classList.remove("hidden");
+});
+
+document.getElementById("cancel-btn")?.addEventListener("click", () => {
+  document.getElementById("add-player-modal")?.classList.add("hidden");
+});
+
+helpButton.addEventListener('click', showAffordableOptions);
+
+      // Function to add a player to your team
+      const addPlayerToTeam = async (playerId: string, playerPrice: string, playerImage: string): Promise<void> => {
+  if (tableBody.querySelector(`[data-id="${playerId}"]`)) {
+    alert("This player is already in your team!");
+    return;
+  }
+  if (budget < parseInt(playerPrice)) {
+    alert("Not enough budget to add this player!");
+    return;
+  }
+
+  playerList.style.display = "none";
+
+  const res = await fetch(`http://localhost:3000/players/${playerId}`, {
+    credentials: 'include',
+  });
+  const player = await res.json();
+
+  if (res.ok) {
+    // Add player to team table
+    const row = document.createElement("tr");
+
+    row.style.backgroundColor = "#f4f4f4"; 
+
+    row.innerHTML = `
+      <td>${player.name}</td>
+      <td>${player.position}</td>
+      <td>${player.number}</td>
+      <td>${player.captain ? 'Yes' : 'No'}</td>
+      <td>${player.price}</td>
+      <td>${player.rating}</td>
+      <td><img src="${player.imageUrl}" alt="${player.name}" style="width: 50px; height: 50px;"></td>
+      <td><button class="remove-btn" data-id="${player.id}" data-price="${player.price}">Remove</button></td>
+    `;
+    const removeButton = row.querySelector(".remove-btn") as HTMLButtonElement | null;
+    if (removeButton) {
+      removeButton.style.backgroundColor = "red";
+      removeButton.style.color = "white";
+      removeButton.style.border = "none";
+      removeButton.style.padding = "8px 12px";
+      removeButton.style.borderRadius = "4px";
+      removeButton.style.cursor = "pointer";
+    }
+
+
+    const cells = row.getElementsByTagName("td");
+    for (let cell of cells) {
+      cell.style.padding = "10px"; 
+      cell.style.textAlign = "center"; 
+    }
+
+    // Add the row to the table
+    tableBody.appendChild(row);
+    console.log (row.cells.length);
+
+    // Add player image to the circles container
+    let selectedImage: HTMLElement | null = null;
+let secondSelectedImage: HTMLElement | null = null;  
+
+const switchButton = document.createElement('button');
+switchButton.style.backgroundImage = 'url("images/switch.png")';
+switchButton.style.backgroundSize = 'cover';
+switchButton.style.position = 'absolute';
+switchButton.style.top = '650px';
+switchButton.style.left = '880px';
+switchButton.style.backgroundColor = 'transparent';
+switchButton.style.width = '150px';
+switchButton.style.height = '150px';
+circleContainer.appendChild(switchButton);
+
+if (circleContainer.querySelectorAll('img').length < 11) {
+    const playerImageElement = document.createElement('img');
+    playerImageElement.src = playerImage;
+    playerImageElement.dataset.id = playerId;
+    circleContainer.appendChild(playerImageElement);
+
+    const images = circleContainer.querySelectorAll('img');
+    const centerX = 1120;
+    const centerY = 700;
+    const formation = [
+        { x: centerX, y: centerY }, 
+        { x: centerX - 250, y: centerY - 150 }, { x: centerX - 100, y: centerY - 150 }, { x: centerX + 50, y: centerY - 150 }, { x: centerX + 200, y: centerY - 150 },
+        { x: centerX - 180, y: centerY - 300 }, { x: centerX - 30, y: centerY - 300 }, { x: centerX + 120, y: centerY - 300 },
+        { x: centerX - 180, y: centerY - 450 }, { x: centerX - 30, y: centerY - 450 }, { x: centerX + 120, y: centerY - 450 }
+    ];
+
+    images.forEach((image, index) => {
+        image.style.position = 'absolute';
+        image.style.left = `${formation[index].x}px`;
+        image.style.top = `${formation[index].y}px`;
+        image.style.width = '80px';
+        image.style.height = '80px';
+        image.style.borderRadius = '50%';
+
+        image.addEventListener('click', () => {
+            if (!selectedImage) {
+                image.style.border = '2px solid red';  
+                selectedImage = image;
+            } else if (!secondSelectedImage && image !== selectedImage) {
+                image.style.border = '2px solid red'; 
+                secondSelectedImage = image; 
+            }
+        });
+    });
+    
+    switchButton.addEventListener('click', () => {
+        if (selectedImage && secondSelectedImage) {
+            const tempX = selectedImage.style.left;
+            const tempY = selectedImage.style.top;
+
+            selectedImage.style.left = secondSelectedImage.style.left;
+            selectedImage.style.top = secondSelectedImage.style.top;
+
+            secondSelectedImage.style.left = tempX;
+            secondSelectedImage.style.top = tempY;
+
+            selectedImage.style.border = 'none';
+            secondSelectedImage.style.border = 'none';
+
+            selectedImage = null;
+            secondSelectedImage = null;
         } else {
-          window.location.href = "/"
+            alert("Please select two players to switch positions.");
         }
-      }
+    });
+} else {
+    alert("You have already selected 11 players.");
+}
 
-      loadProfile()
+    // Update the budget
+    budget -= parseInt(playerPrice);
+    budgetElement.innerText = `💰 $${budget}`;
+
+    //Update the overall rating
+    function calculateOverallRating(): number {
+      let totalRating = 0;
+      const rows = tableBody.querySelectorAll('tr');
+      rows.forEach(row => {
+        const ratingElement = row.querySelector('td:nth-child(6)');
+        if (ratingElement instanceof HTMLElement) {
+          totalRating += parseFloat(ratingElement.innerText);
+        }
+      });
+      return totalRating / rows.length;
+    }
+    const overallRatingElement = document.getElementById('overall-rating') as HTMLDivElement;
+    const overallRating = calculateOverallRating();
+    overallRatingElement.innerText = `⭐ ${overallRating.toFixed(2)}`;
+
+    // Add event listener to remove button
+    const removeBtns = document.querySelectorAll('.remove-btn') as NodeListOf<HTMLButtonElement>;
+    removeBtns.forEach(button => {
+      button.addEventListener('click', () => removePlayerFromTeam(button.dataset.id!, button.dataset.price!));
+    });
+  } else {
+    alert("Error adding player to your team");
+  }
+};
+
+      // Function to remove a player from team
+const removePlayerFromTeam = (playerId: string, playerPrice: string): void => {
+  const rows = tableBody.querySelectorAll('tr');
+  rows.forEach(row => {
+    const removeBtn = row.querySelector('.remove-btn');
+    if (removeBtn instanceof HTMLElement && removeBtn.dataset.id === playerId) {
+      row.remove();
+      budget += parseInt(playerPrice); 
+      budgetElement.innerText = `💰 $${budget}`;
+
+      // Update the overall rating
+      function calculateOverallRating(): number {
+        let totalRating = 0;
+        const rows = tableBody.querySelectorAll('tr');
+        rows.forEach(row => {
+          const ratingElement = row.querySelector('td:nth-child(6)');
+          if (ratingElement instanceof HTMLElement) {
+            totalRating += parseFloat(ratingElement.innerText);
+          }
+        });
+        return totalRating / rows.length;
+      }
+      const overallRatingElement = document.getElementById('overall-rating') as HTMLDivElement;
+      const overallRating = calculateOverallRating();
+      if (isNaN(overallRating) || overallRating === null) {
+  overallRatingElement.innerText = `⭐ 0.00`;
+} else {
+  overallRatingElement.innerText = `⭐ ${overallRating.toFixed(2)}`;
+}
+    }
+  });
+
+  // Remove the player's image from the circle container
+  const images = circleContainer.querySelectorAll('img');
+  images.forEach(image => {
+    if (image.dataset.id === playerId) {
+      image.remove(); //
+    }
+  });
+};
+
+      // Load user profile to customize the page
+      const loadProfile = async (): Promise<void> => {
+        const res = await fetch('http://localhost:3000/users/profile', {
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (res.ok) {
+          container.classList.remove('hidden');
+          const title = container.querySelector('h1') as HTMLHeadingElement;
+          console.log(data);
+          title.innerText = `${data.username}'S FOOTBALL TEAM`;
+          fetchPlayers(); 
+        } else {
+          window.location.href = "/login";
+        }
+      };
+
+      loadProfile();
     </script>
-	</body>
+  </body>
 </html>
